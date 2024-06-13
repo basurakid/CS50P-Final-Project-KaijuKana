@@ -14,6 +14,7 @@ class Window(ctk.CTk):
         self.title("KaijuKana")
         self.geometry("1600x900")
         self.configure(bg="#44344F")
+        self.resizable(False, False)
 
         # Cargar imágenes para el botón de modo claro/oscuro
         dark_light_icon = ctk.CTkImage(light_image=Image.open("images/light_mode.png"),
@@ -112,14 +113,14 @@ class SelectionFrame(ctk.CTkFrame):
         # Frame general
         self.tab_frame = ctk.CTkFrame(self,
                                       width=1600,
-                                      height=800,
+                                      height=820,
                                       fg_color=("#d7f9d9", "#2B2031"))
         self.tab_frame.pack()
 
         # Tabview de hiragana/katakana
         self.kana_tab = ctk.CTkTabview(self.tab_frame,
                                        width=1600,
-                                       height=600,
+                                       height=820,
                                        fg_color=("#d7f9d9", "#2B2031"),
                                        segmented_button_fg_color=("#C2F970", "#44344F"),
                                        segmented_button_selected_color=("#acf63c", "#35283E"),
@@ -144,12 +145,21 @@ class QuizFrame(ctk.CTkFrame):
     def __init__(self, parent: Window):
         ctk.CTkFrame.__init__(self, parent)
 
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+
+        self.outer_frame = ctk.CTkFrame(self,
+                                        width=1600,
+                                        height=820,
+                                        fg_color=("#d7f9d9", "#2B2031"))
+        self.outer_frame.grid(sticky="nsew")
+
         # Frame scrolleable por si quiz es demasiado largo
-        self.scroll_frame = ctk.CTkScrollableFrame(self,
-                                                   width=1250,
-                                                   height=550,
+        self.scroll_frame = ctk.CTkScrollableFrame(self.outer_frame,
+                                                   width=1600,
+                                                   height=720,
                                                    fg_color=("#d7f9d9", "#2B2031"))
-        self.scroll_frame.grid(sticky="nsew")
+        self.scroll_frame.grid(row=0, column=0, sticky="nsew")
 
         self.instructions = ctk.CTkLabel(self.scroll_frame,
                                              text="Type answer in Romaji",
@@ -179,17 +189,20 @@ class QuizFrame(ctk.CTkFrame):
                 self.scroll_frame.grid_columnconfigure(i, weight=1)
 
             for i, kana in enumerate(parent.quiz_kana):
-                self.label = ctk.CTkLabel(self.scroll_frame, text=kana[1], width=65)
+                self.label = ctk.CTkLabel(self.scroll_frame, text=kana[1], width=30)
                 self.entry = ctk.CTkEntry(self.scroll_frame, width=65)
                 self.label.grid(row=1, column=i, padx=10, pady=(10, 5))
                 self.entry.grid(row=2, column=i, padx=10, pady=5)
 
         # Frame inferior y boton de entregar
-        self.lower_frame = ctk.CTkFrame(self,
+        self.lower_frame = ctk.CTkFrame(self.outer_frame,
                                         width=1600,
                                         height=100,
                                         fg_color=("#d7f9d9", "#2B2031"))
-        self.lower_frame.grid(sticky="ew")
+        self.lower_frame.grid(row=1, column=0)
+        self.lower_frame.grid_propagate(False)
+        self.lower_frame.grid_columnconfigure(0, weight=1)
+        self.lower_frame.grid_rowconfigure(0, weight=1)
 
         self.submit_button = ctk.CTkButton(self.lower_frame,
                                            height=50,
@@ -198,7 +211,7 @@ class QuizFrame(ctk.CTkFrame):
                                            fg_color=("#C2F970", "#44344F"),
                                            hover_color=("#b4b7ae", "#6a6b6f"),
                                            command=lambda: submit_quiz(self.scroll_frame, parent))
-        self.submit_button.pack()
+        self.submit_button.grid(row=0, column=0,pady=(10,0),padx=(0,15))
 
 # Frame de resultados
 
@@ -219,10 +232,9 @@ class ScoreFrame(ctk.CTkFrame):
         # Frame general
         self.inner_frame = ctk.CTkScrollableFrame(self,
                                         width=1600,
-                                        height=800,
+                                        height=820,
                                         fg_color=("#d7f9d9", "#2B2031"))
         self.inner_frame.grid(column=0, row=0, sticky="nsew")
-        # self.inner_frame.grid_propagate(False)
 
         self.inner_frame.grid_columnconfigure(0, weight=1)
 
@@ -283,7 +295,7 @@ class ScoreFrame(ctk.CTkFrame):
                                                image=big_godzilla_logo,
                                                text="",
                                                fg_color="transparent")
-        self.big_godzilla_label.place(x=780, y=280)
+        self.big_godzilla_label.place(x=940, y=270)
 
         self.results_frame = ctk.CTkFrame(self.inner_frame,
                                           width=1250,
@@ -403,16 +415,16 @@ def create_checkboxes(tab_name, frame_main, frame_dakuten, frame_combination):
     for i, text in enumerate(main_kana):
         row, col = divmod(i, 2)
         checkbox = ctk.CTkCheckBox(frame_main, text=text)
-        checkbox.grid(row=row, column=col, padx=(35), pady=(5, 5))
+        checkbox.grid(row=row, column=col, pady=(5, 5), sticky="ew")
 
     for i, text in enumerate(dakuten_kana):
         checkbox = ctk.CTkCheckBox(frame_dakuten, text=text)
-        checkbox.grid(row=i, column=0, padx=(25), pady=(5, 5))
+        checkbox.grid(row=i, column=0, pady=(5, 5))
 
     for i, text in enumerate(combination_kana):
         row, col = divmod(i, 2)
         checkbox = ctk.CTkCheckBox(frame_combination, text=text)
-        checkbox.grid(row=row, column=col, padx=(25), pady=(5, 5), sticky="ew")
+        checkbox.grid(row=row, column=col, pady=(5, 5), sticky="ew")
 
 
 def create_selection_layout(tab, tab_name, window):
@@ -422,37 +434,36 @@ def create_selection_layout(tab, tab_name, window):
     tab.grid_rowconfigure(0, weight=1)
     tab.grid_columnconfigure(0, weight=1)
 
-    # Frame scrolleable para katakana
-    scroll_frame = ctk.CTkScrollableFrame(tab,
-                                          width=1500,
-                                          height=500,
-                                          fg_color=("#d7f9d9", "#2B2031"))
-    scroll_frame.grid(column=0)
-    scroll_frame.grid_columnconfigure(0, weight=1, minsize=420)
-    scroll_frame.grid_columnconfigure(1, weight=1, minsize=420)
-    scroll_frame.grid_columnconfigure(2, weight=1, minsize=420)
+    outer_frame = ctk.CTkFrame(tab,
+                               width=1600,
+                               height=720,
+                               fg_color=("#d7f9d9", "#2B2031"))
+    outer_frame.grid(column=0)
+    outer_frame.grid_columnconfigure(0, weight=1, minsize=420)
+    outer_frame.grid_columnconfigure(1, weight=1, minsize=420)
+    outer_frame.grid_columnconfigure(2, weight=1, minsize=420)
 
     # Boton all kana
-    all_kana = ctk.CTkCheckBox(scroll_frame, text="All Kana", command=lambda: toggle_all(
+    all_kana = ctk.CTkCheckBox(outer_frame, text="All Kana", command=lambda: toggle_all(
         all_kana, all_main_kana, all_dakuten_kana, all_combination_kana, left_frame, center_frame, right_frame))
     all_kana.grid(row=0, column=1, pady=(20, 30))
 
     # Labels de grupo
-    main_kana_label = ctk.CTkLabel(scroll_frame,
+    main_kana_label = ctk.CTkLabel(outer_frame,
                                    width=5,
                                    anchor="center",
                                    text="Main Kana",
                                    font=("NotoSansJp", 30, "bold"))
     main_kana_label.grid(column=0, row=1, pady=(0, 20))
 
-    dakuten_kana_label = ctk.CTkLabel(scroll_frame,
+    dakuten_kana_label = ctk.CTkLabel(outer_frame,
                                       width=5,
                                       anchor="center",
                                       text="Dakuten Kana",
                                       font=("NotoSansJp", 30, "bold"))
     dakuten_kana_label.grid(column=1, row=1, pady=(0, 20))
 
-    combination_kana_label = ctk.CTkLabel(scroll_frame,
+    combination_kana_label = ctk.CTkLabel(outer_frame,
                                           width=5,
                                           anchor="center",
                                           text="Combination Kana",
@@ -461,29 +472,32 @@ def create_selection_layout(tab, tab_name, window):
 
 
     # Botones de grupo
-    all_main_kana = ctk.CTkCheckBox(scroll_frame, text="All Main Kana",
+    all_main_kana = ctk.CTkCheckBox(outer_frame, text="All Main Kana",
                                     command=lambda: toggle_group(all_main_kana, left_frame))
     all_main_kana.configure()
     all_main_kana.grid(row=2, column=0, padx=(0))
 
     all_dakuten_kana = ctk.CTkCheckBox(
-        scroll_frame, text="All Dakuten Kana", command=lambda: toggle_group(all_dakuten_kana, center_frame))
+        outer_frame, text="All Dakuten Kana", command=lambda: toggle_group(all_dakuten_kana, center_frame))
     all_dakuten_kana.grid(row=2, column=1, padx=(0))
 
     all_combination_kana = ctk.CTkCheckBox(
-        scroll_frame, text="All Combination Kana", command=lambda: toggle_group(all_combination_kana, right_frame))
+        outer_frame, text="All Combination Kana", command=lambda: toggle_group(all_combination_kana, right_frame))
     all_combination_kana.grid(row=2, column=2, padx=(0))
 
     # Crea frame por grupo para poder checkear por separado
-    left_frame = ctk.CTkFrame(scroll_frame, fg_color="transparent")
-    center_frame = ctk.CTkFrame(scroll_frame, fg_color="transparent")
-    right_frame = ctk.CTkFrame(scroll_frame, fg_color="transparent")
+    left_frame = ctk.CTkFrame(outer_frame, width=250, height=600, fg_color="transparent")
+    center_frame = ctk.CTkFrame(outer_frame, height=600, fg_color="transparent")
+    right_frame = ctk.CTkFrame(outer_frame, width=350, height=600, fg_color="transparent")
 
-    left_frame.grid(row=3, column=0, padx=(35, 0), sticky="nsew")
-    center_frame.grid(row=3, column=1, sticky="nsew")
-    right_frame.grid(row=3, column=2, sticky="nsew")
+    left_frame.grid(row=3, column=0)
+    left_frame.grid_propagate(False,)
+    center_frame.grid(row=3, column=1)
+    center_frame.grid_propagate(False)
+    right_frame.grid(row=3, column=2)
+    right_frame.grid_propagate(False)
 
-    # left_frame.grid_columnconfigure(0, weight=0) causa problemas
+    left_frame.grid_columnconfigure(0, weight=1)
     center_frame.grid_columnconfigure(0, weight=1)
     right_frame.grid_columnconfigure(0, weight=1)
 

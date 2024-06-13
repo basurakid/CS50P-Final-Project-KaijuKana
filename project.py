@@ -50,7 +50,7 @@ def create_populate_dictionary(file_path):
     Helper que abre y detecta espacios en blanco para crear keys:listas en un diccionario
     """
     try:
-        with open(file_path) as file:
+        with open(file_path, mode='r', encoding='utf-8') as file:
             reader = csv.reader(file)
             dict_kana = {}
             new_list_bool = False
@@ -107,7 +107,6 @@ def sort_selected_kana(hiragana_kana, katakana_kana, window):
                 if group_key in katakana_kana:
                     quiz_kana += katakana_kana[group_key]
     random.shuffle(quiz_kana)
-    print(quiz_kana)
     window.quiz_kana = quiz_kana
     window.switch_frame(window.frame)
 
