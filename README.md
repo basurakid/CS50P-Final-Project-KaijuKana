@@ -28,7 +28,8 @@ After downloading all files and needed libraries you can run KaijuKana in the te
 
     -After selecting the desired groups, just click __Start__ button.
 
-    ![Kana Selection](https://imgur.com/a/vuQhR5v)
+    ![example1-kana_selection](https://github.com/basurakid/CS50P-Final-Project-KaijuKana/assets/92126346/48ecbd36-534b-4b28-a957-0019840b298c)
+
 
 2. __Answer Quiz:__
 
