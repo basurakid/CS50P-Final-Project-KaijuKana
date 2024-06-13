@@ -1,5 +1,5 @@
 # KaijuKana
-    #### Video Demo:  <URL HERE>
+    #### Video Demo: https://youtu.be/6qzIoshZpVU
     #### Description:
 
 ## Description
