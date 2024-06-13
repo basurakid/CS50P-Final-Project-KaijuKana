@@ -1,6 +1,6 @@
 # KaijuKana
     #### Video Demo: https://youtu.be/6qzIoshZpVU
-    #### Description:
+    #### Description: A quiz to learn japanese Hiragana and Katakana characters
 
 ## Description
 
