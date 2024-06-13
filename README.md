@@ -39,11 +39,15 @@ After downloading all files and needed libraries you can run KaijuKana in the te
 
     -When you are done, click the __Submit__ button.
 
+    ![example2-quiz](https://github.com/basurakid/CS50P-Final-Project-KaijuKana/assets/92126346/ce1a98c4-b26b-4029-8722-5b5b7ba28474)
+
 3. __View Results:__
 
     -After completing the quiz, you will receive a score showing the number of correct answers.
 
     -Scroll down to review any errors and understand where you made mistakes.
+
+    ![example3-scores](https://github.com/basurakid/CS50P-Final-Project-KaijuKana/assets/92126346/946b7b1b-63e6-425f-9e0c-734d4f97c7ac)
 
 ### Tips
 
